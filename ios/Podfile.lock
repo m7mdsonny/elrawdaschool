@@ -156,7 +156,7 @@ PODS:
     - StripeApplePay (~> 23.22.0)
     - StripeFinancialConnections (~> 23.22.0)
     - StripePayments (~> 23.22.0)
-    - StripePaymentSheet (~> 23.22.0)
+    - StripePaymentSheet (~> 23.28.0)
     - StripePaymentsUI (~> 23.22.0)
   - StripeApplePay (23.22.1):
     - StripeCore (= 23.22.1)
@@ -169,7 +169,7 @@ PODS:
     - StripePayments/Stripe3DS2 (= 23.22.1)
   - StripePayments/Stripe3DS2 (23.22.1):
     - StripeCore (= 23.22.1)
-  - StripePaymentSheet (23.22.1):
+  - StripePaymentSheet (23.28.0):
     - StripeApplePay (= 23.22.1)
     - StripeCore (= 23.22.1)
     - StripePayments (= 23.22.1)
