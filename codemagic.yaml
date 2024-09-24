@@ -38,17 +38,7 @@ workflows:
                      -exportPath build/ios/ipa \
                      -allowProvisioningUpdates
 
-    # نشر الملفات وتلقي إشعارات البريد الإلكتروني
     publishing:
       email:
         recipients:
           - m7mdsonny@gmail.com  # البريد الإلكتروني لتلقي الإشعارات
-
-    # إعدادات التوقيع التلقائي
-    code_signing:
-      distribution_certificate:
-        keychain_path: $CM_KEYCHAIN_PATH  # مسار الشهادة المخزنة
-        certificate_password: $DISTRIBUTION_CERTIFICATE_PASSWORD  # كلمة المرور لشهادة التوزيع
-      provisioning_profile:
-        path: $PROVISIONING_PROFILE_PATH  # مسار ملف Provisioning Profile
-
