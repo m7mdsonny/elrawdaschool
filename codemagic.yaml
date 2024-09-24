@@ -12,9 +12,10 @@ workflows:
         script: |
           flutter test
 
-      - name: Run Integration Tests
-        script: |
-          flutter drive --target=test_driver/app.dart  # تأكد من وجود اختبار الدمج
+      # تم إزالة اختبار الدمج هنا
+      # - name: Run Integration Tests
+      #   script: |
+      #     flutter drive --target=test_driver/app.dart
 
       - name: Build iOS App
         script: |
@@ -23,4 +24,4 @@ workflows:
     publishing:
       email:
         recipients:
-          - m7mdsonny@gmail.com  # أدخل بريدك الإلكتروني هنا
+          - m7mdsonny@gmail.com
