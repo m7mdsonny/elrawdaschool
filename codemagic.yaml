@@ -2,7 +2,7 @@ workflows:
   ios-workflow:
     name: iOS Test and Build Workflow
     environment:
-      flutter: stable  # استخدم القناة المناسبة لـ Flutter
+      flutter: stable
     scripts:
       - name: Install dependencies
         script: |
@@ -23,7 +23,5 @@ workflows:
     publishing:
       email:
         recipients:
-          - m7mdsonny@gmail.com  # أدخل بريدك الإلكتروني لتلقي الإشعارات
-        notify:
-          on_success: true   # إشعار عند النجاح
-          on_failure: true   # إشعار عند الفشل
+          - your-email@example.com  # أدخل بريدك الإلكتروني
+        notify: true  # سيتم إرسال إشعار عند الفشل أو النجاح
