@@ -23,5 +23,5 @@ workflows:
     publishing:
       email:
         recipients:
-          - your-email@example.com  # أدخل بريدك الإلكتروني
+          - m7mdsonny@gmail.com  # أدخل بريدك الإلكتروني
         notify: true  # سيتم إرسال إشعار عند الفشل أو النجاح
