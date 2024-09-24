@@ -49,4 +49,4 @@ workflows:
     publishing:
       email:
         recipients:
-          - m7mdsonny@gmail.com  # ضع بريدك الإلكتروني هنا لتلقي الإشعارات
+          - m7mdsonny@gmail.com.com  # ضع بريدك الإلكتروني هنا لتلقي الإشعارات
