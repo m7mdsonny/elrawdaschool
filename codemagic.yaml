@@ -1,6 +1,6 @@
 workflows:
   ios-workflow:
-    name: iOS Test and Build Workflow
+    name: iOS Build and Archive Workflow
     environment:
       flutter: stable  # يمكنك تعديل هذا إلى إصدار محدد من Flutter إذا لزم الأمر
     scripts:
@@ -12,12 +12,13 @@ workflows:
       # 2. تعديل Podfile وتثبيت CocoaPods
       - name: Update Podfile and install CocoaPods
         script: |
-          sed -i '' 's/platform :ios, '8.0'/platform :ios, '12.0'/g' ios/Podfile  # تأكد من أن iOS 12.0 هو الحد الأدنى
+          # تأكد من أن الحد الأدنى لإصدار iOS هو 12.0
+          sed -i '' 's/platform :ios, '8.0'/platform :ios, '12.0'/g' ios/Podfile
           cd ios
           pod install
           cd ..
 
-      # 3. بناء أرشيف iOS مع التوقيع التلقائي (Automatic Code Signing)
+      # 3. بناء أرشيف iOS مع التوقيع التلقائي
       - name: Build iOS Archive
         script: |
           xcodebuild -workspace ios/Runner.xcworkspace \
@@ -37,7 +38,16 @@ workflows:
                      -exportPath build/ios/ipa \
                      -allowProvisioningUpdates
 
+    # نشر الملفات وتلقي إشعارات البريد الإلكتروني
     publishing:
       email:
         recipients:
-          - m7mdsonny@gmail.com  # ضع بريدك الإلكتروني هنا لتلقي الإشعارات
+          - m7mdsonny@gmail.com  # البريد الإلكتروني لتلقي الإشعارات
+
+    # إعدادات التوقيع التلقائي
+    code_signing:
+      distribution_certificate:
+        keychain_path: $CM_KEYCHAIN_PATH  # مسار الشهادة المخزنة
+        certificate_password: $DISTRIBUTION_CERTIFICATE_PASSWORD  # كلمة المرور لشهادة التوزيع
+      provisioning_profile:
+        path: $PROVISIONING_PROFILE_PATH  # مسار ملف Provisioning Profile
