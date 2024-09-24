@@ -1,13 +1,23 @@
 workflows:
   ios-workflow:
-    name: iOS Archive and IPA Workflow
+    name: iOS Test and Build Workflow
     environment:
-      flutter: stable  # استخدم القناة المناسبة لنسخة Flutter
+      flutter: stable  # يمكنك تعديل هذا إلى إصدار محدد من Flutter إذا لزم الأمر
     scripts:
+      # 1. تثبيت التبعيات
       - name: Install dependencies
         script: |
           flutter pub get
 
+      # 2. تعديل Podfile وتثبيت CocoaPods
+      - name: Update Podfile and install CocoaPods
+        script: |
+          sed -i '' 's/platform :ios, '8.0'/platform :ios, '12.0'/g' ios/Podfile  # تأكد من أن iOS 12.0 هو الحد الأدنى
+          cd ios
+          pod install
+          cd ..
+
+      # 3. بناء أرشيف iOS مع التوقيع التلقائي (Automatic Code Signing)
       - name: Build iOS Archive
         script: |
           xcodebuild -workspace ios/Runner.xcworkspace \
@@ -15,16 +25,28 @@ workflows:
                      -sdk iphoneos \
                      -configuration Release \
                      -archivePath build/ios/iphoneos/Runner.xcarchive \
+                     -allowProvisioningUpdates \
                      archive
 
+      # 4. إنشاء ملف IPA
       - name: Create IPA
         script: |
           xcodebuild -exportArchive \
                      -archivePath build/ios/iphoneos/Runner.xcarchive \
                      -exportOptionsPlist ios/Runner/Info.plist \
-                     -exportPath build/ios/ipa
+                     -exportPath build/ios/ipa \
+                     -allowProvisioningUpdates
 
+    # إعدادات التوقيع
+    code_signing:
+      apple_id: $APPLE_ID  # تأكد من إضافة بيانات Apple ID في Codemagic
+      teams:
+        - name: My Team
+          team_id: $APPLE_DEVELOPER_TEAM_ID  # ضع هنا معرف فريق Apple Developer الخاص بك
+      distribution_type: app-store  # أو development إذا كنت في مرحلة التطوير
+
+    # نشر الملفات
     publishing:
       email:
         recipients:
-          - m7mdsonny@gmail.com  # ضع هنا بريدك الإلكتروني لتلقي الإشعارات
+          - m7mdsonny@gmail.com  # ضع بريدك الإلكتروني هنا لتلقي الإشعارات
