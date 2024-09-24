@@ -3,32 +3,20 @@ workflows:
     name: "iOS Workflow"
 
     environment:
-      flutter: stable  # يمكنك تحديد إصدار Flutter المناسب لمشروعك
-      xcode: latest     # تأكد من استخدام أحدث إصدار متاح من Xcode
+      flutter: stable  # أو إصدار Flutter الذي تستخدمه
+      xcode: latest     # أو الإصدار المناسب
       ios_signing:
-        distribution_type: app_store  # أو development/ad_hoc حسب نوع التوزيع
-        bundle_identifier: com.elrawda.ios  # استبدل هذا بـ Bundle ID الخاص بتطبيقك
+        distribution_type: app_store  # أو development إذا كنت تختبر
+        bundle_identifier: com.elrawda.ios  # تأكد من تطابق Bundle ID مع تطبيقك
 
     scripts:
-      # 1. تنظيف المشروع والتبعيات
-      - name: Clean project and reset dependencies
+      - name: Clean project
         script: |
-          flutter clean  # تنظيف المشروع
-          rm -rf ios/Pods  # حذف تبعيات iOS القديمة
-          rm -rf ios/.symlinks  # حذف الروابط الرمزية
-          rm -rf ios/Flutter/Flutter.framework
-          rm -rf ios/Flutter/Flutter.podspec
+          flutter clean
           cd ios
-          pod cache clean --all  # تنظيف ذاكرة التخزين المؤقت لـ CocoaPods
-          pod install  # إعادة تثبيت التبعيات
+          pod install  # تثبيت التبعيات
           cd ..
 
-      # 2. تثبيت تبعيات Flutter
-      - name: Install Flutter dependencies
-        script: |
-          flutter pub get  # تثبيت التبعيات باستخدام pub
-
-      # 3. بناء أرشيف iOS
       - name: Build iOS Archive
         script: |
           xcodebuild -workspace ios/Runner.xcworkspace \
@@ -39,7 +27,6 @@ workflows:
                      -allowProvisioningUpdates \
                      archive
 
-      # 4. إنشاء ملف IPA للتوزيع
       - name: Create IPA
         script: |
           xcodebuild -exportArchive \
@@ -49,9 +36,9 @@ workflows:
                      -allowProvisioningUpdates
 
     artifacts:
-      - build/ios/ipa/*.ipa  # تأكد من أن المسار يشير إلى ملفات IPA الصحيحة
+      - build/ios/ipa/*.ipa  # تأكد من صحة المسار لتخزين ملف IPA
 
     publishing:
       email:
         recipients:
-          - m7mdsonny@gmail.com  # أدخل بريدك الإلكتروني لتلقي الإشعارات حول حالة البناء
+          - m7mdsonny@gmail.com  # أدخل بريدك الإلكتروني لتلقي إشعارات النجاح أو الفشل
