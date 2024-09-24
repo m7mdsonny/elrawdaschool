@@ -1,26 +1,18 @@
 workflows:
   ios-workflow:
-    name: iOS Test and Build Workflow
+    name: iOS Workflow
     environment:
       flutter: stable
     scripts:
       - name: Install dependencies
         script: |
           flutter pub get
-
       - name: Run Unit Tests
         script: |
           flutter test
-
-      # تم إزالة اختبار الدمج هنا
-      # - name: Run Integration Tests
-      #   script: |
-      #     flutter drive --target=test_driver/app.dart
-
       - name: Build iOS App
         script: |
           flutter build ios --release --no-codesign
-
     publishing:
       email:
         recipients:
