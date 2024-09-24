@@ -4,29 +4,26 @@ workflows:
     environment:
       flutter: stable  # استخدم القناة المناسبة لـ Flutter
     scripts:
-      # 1. تثبيت التبعيات
       - name: Install dependencies
         script: |
           flutter pub get
 
-      # 2. تشغيل اختبارات الوحدة
       - name: Run Unit Tests
         script: |
           flutter test
 
-      # 3. تشغيل اختبارات الدمج (اختياري)
       - name: Run Integration Tests
         script: |
           flutter drive --target=test_driver/app.dart  # تأكد من وجود اختبار الدمج
 
-      # 4. بناء التطبيق لنظام iOS
       - name: Build iOS App
         script: |
           flutter build ios --release --no-codesign
 
-    # إعداد البريد الإلكتروني لإرسال إشعارات النجاح أو الفشل
     publishing:
       email:
         recipients:
-          - your-email@example.com  # أدخل بريدك الإلكتروني لتلقي الإشعارات
-        notify: success  # أو يمكنك تعديلها لتكون failure أو both
+          - m7mdsonny@gmail.com  # أدخل بريدك الإلكتروني لتلقي الإشعارات
+        notify:
+          on_success: true   # إشعار عند النجاح
+          on_failure: true   # إشعار عند الفشل
