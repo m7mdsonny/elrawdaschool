@@ -1,24 +1,40 @@
 workflows:
   ios-workflow:
-    name: iOS Build and Archive Workflow
+    name: "iOS Workflow"
+
     environment:
-      flutter: stable  # يمكنك تعديل هذا إلى إصدار محدد من Flutter إذا لزم الأمر
+      flutter: 3.22.0  # يمكنك اختيار النسخة المناسبة من Flutter
+      xcode: latest     # إصدار Xcode الحديث لتجنب المشاكل المتعلقة بالإصدارات القديمة
+      ios_signing:
+        distribution_type: development  # أو development/ad_hoc/enterprise بناءً على الحاجة
+        bundle_identifier: com.elrawda.ios  # استبدل بـ Bundle ID الخاص بك
+        provisioning_profiles:
+          - profile: $PROVISIONING_PROFILE_REFERENCE  # متغير بيئة لملف التوفير
+            environment_variable: PROVISIONING_PROFILE_PATH  # المسار على القرص
+        certificates:
+          - certificate: $CERTIFICATE_REFERENCE  # متغير بيئة للشهادة
+            environment_variable: CERTIFICATE_PATH  # المسار على القرص
+
     scripts:
-      # 1. تثبيت التبعيات
-      - name: Install dependencies
+      # 1. تنظيف المشروع والتبعيات
+      - name: Clean project and reset dependencies
+        script: |
+          flutter clean  # تنظيف المشروع
+          rm -rf ios/Pods  # حذف تبعيات iOS
+          rm -rf ios/.symlinks  # حذف الروابط الرمزية
+          rm -rf ios/Flutter/Flutter.framework
+          rm -rf ios/Flutter/Flutter.podspec
+          cd ios
+          pod cache clean --all  # تنظيف ذاكرة التخزين المؤقت لـ CocoaPods
+          pod install  # إعادة تثبيت تبعيات iOS
+          cd ..
+
+      # 2. تثبيت تبعيات Flutter
+      - name: Install Flutter dependencies
         script: |
           flutter pub get
 
-      # 2. تعديل Podfile وتثبيت CocoaPods
-      - name: Update Podfile and install CocoaPods
-        script: |
-          # تأكد من أن الحد الأدنى لإصدار iOS هو 12.0
-          sed -i '' 's/platform :ios, '8.0'/platform :ios, '12.0'/g' ios/Podfile
-          cd ios
-          pod install
-          cd ..
-
-      # 3. بناء أرشيف iOS مع التوقيع التلقائي
+      # 3. بناء أرشيف iOS
       - name: Build iOS Archive
         script: |
           xcodebuild -workspace ios/Runner.xcworkspace \
@@ -29,7 +45,7 @@ workflows:
                      -allowProvisioningUpdates \
                      archive
 
-      # 4. إنشاء ملف IPA
+      # 4. إنشاء ملف IPA للتوزيع
       - name: Create IPA
         script: |
           xcodebuild -exportArchive \
@@ -41,4 +57,8 @@ workflows:
     publishing:
       email:
         recipients:
-          - m7mdsonny@gmail.com  # البريد الإلكتروني لتلقي الإشعارات
+          - m7mdsonny@gmail.com  # ضع بريدك الإلكتروني لتلقي إشعارات النجاح أو الفشل
+
+    artifacts:
+      paths:
+        - build/ios/ipa/*.ipa  # تأكد من حفظ ملفات IPA في مسار محدد
