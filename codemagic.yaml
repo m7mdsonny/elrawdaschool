@@ -3,36 +3,30 @@ workflows:
     name: "iOS Workflow"
 
     environment:
-      flutter: 3.22.0  # يمكنك اختيار النسخة المناسبة من Flutter
-      xcode: latest     # إصدار Xcode الحديث لتجنب المشاكل المتعلقة بالإصدارات القديمة
+      flutter: stable  # يمكنك تحديد إصدار Flutter المناسب لمشروعك
+      xcode: latest     # تأكد من استخدام أحدث إصدار متاح من Xcode
       ios_signing:
-        distribution_type: development  # أو development/ad_hoc/enterprise بناءً على الحاجة
-        bundle_identifier: com.elrawda.ios  # استبدل بـ Bundle ID الخاص بك
-        provisioning_profiles:
-          - profile: $PROVISIONING_PROFILE_REFERENCE  # متغير بيئة لملف التوفير
-            environment_variable: PROVISIONING_PROFILE_PATH  # المسار على القرص
-        certificates:
-          - certificate: $CERTIFICATE_REFERENCE  # متغير بيئة للشهادة
-            environment_variable: CERTIFICATE_PATH  # المسار على القرص
+        distribution_type: app_store  # أو development/ad_hoc حسب نوع التوزيع
+        bundle_identifier: com.elrawda.ios  # استبدل هذا بـ Bundle ID الخاص بتطبيقك
 
     scripts:
       # 1. تنظيف المشروع والتبعيات
       - name: Clean project and reset dependencies
         script: |
           flutter clean  # تنظيف المشروع
-          rm -rf ios/Pods  # حذف تبعيات iOS
+          rm -rf ios/Pods  # حذف تبعيات iOS القديمة
           rm -rf ios/.symlinks  # حذف الروابط الرمزية
           rm -rf ios/Flutter/Flutter.framework
           rm -rf ios/Flutter/Flutter.podspec
           cd ios
           pod cache clean --all  # تنظيف ذاكرة التخزين المؤقت لـ CocoaPods
-          pod install  # إعادة تثبيت تبعيات iOS
+          pod install  # إعادة تثبيت التبعيات
           cd ..
 
       # 2. تثبيت تبعيات Flutter
       - name: Install Flutter dependencies
         script: |
-          flutter pub get
+          flutter pub get  # تثبيت التبعيات باستخدام pub
 
       # 3. بناء أرشيف iOS
       - name: Build iOS Archive
@@ -54,11 +48,11 @@ workflows:
                      -exportPath build/ios/ipa \
                      -allowProvisioningUpdates
 
+    artifacts:
+      paths:
+        - build/ios/ipa/*.ipa  # تأكد من أن هذا المسار يشير إلى ملفات IPA الصحيحة
+
     publishing:
       email:
         recipients:
-          - m7mdsonny@gmail.com  # ضع بريدك الإلكتروني لتلقي إشعارات النجاح أو الفشل
-
-    artifacts:
-      paths:
-        - build/ios/ipa/*.ipa  # تأكد من حفظ ملفات IPA في مسار محدد
+          - m7mdsonny@gmail.com  # أدخل بريدك الإلكتروني لتلقي الإشعارات حول حالة البناء
