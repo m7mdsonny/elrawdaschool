@@ -1,41 +1,30 @@
 workflows:
   ios-workflow:
-    name: iOS Workflow
+    name: iOS Archive and IPA Workflow
     environment:
-      flutter: stable
+      flutter: stable  # استخدم القناة المناسبة لنسخة Flutter
     scripts:
       - name: Install dependencies
         script: |
           flutter pub get
-      - name: Run Unit Tests
+
+      - name: Build iOS Archive
         script: |
-          flutter test
-      - name: Build iOS App
-        script: |
-          flutter build ios --release --no-codesign
-    publishing:
-      email:
-        recipients:
-          - m7mdsonny@gmail.com
-workflows:
-  ios-workflow:
-    name: iOS Test and Build Workflow
-    environment:
-      flutter: stable
-    scripts:
-      - name: Install dependencies
-        script: |
-          flutter pub get
-      - name: Build iOS App
-        script: |
-          flutter build ios --release --no-codesign
+          xcodebuild -workspace ios/Runner.xcworkspace \
+                     -scheme Runner \
+                     -sdk iphoneos \
+                     -configuration Release \
+                     -archivePath build/ios/iphoneos/Runner.xcarchive \
+                     archive
+
       - name: Create IPA
         script: |
           xcodebuild -exportArchive \
-            -archivePath build/ios/iphoneos/Runner.xcarchive \
-            -exportOptionsPlist ios/Runner/Info.plist \
-            -exportPath build/ios/ipa
+                     -archivePath build/ios/iphoneos/Runner.xcarchive \
+                     -exportOptionsPlist ios/Runner/Info.plist \
+                     -exportPath build/ios/ipa
+
     publishing:
       email:
         recipients:
-          - m7mdsonny@gmail.com  # أدخل بريدك الإلكتروني لتلقي الإشعارات
+          - m7mdsonny@gmail.com  # ضع هنا بريدك الإلكتروني لتلقي الإشعارات
