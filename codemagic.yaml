@@ -23,5 +23,4 @@ workflows:
     publishing:
       email:
         recipients:
-          - m7mdsonny@gmail.com  # أدخل بريدك الإلكتروني
-        notify: true  # سيتم إرسال إشعار عند الفشل أو النجاح
+          - m7mdsonny@gmail.com  # أدخل بريدك الإلكتروني هنا
