@@ -49,8 +49,7 @@ workflows:
                      -allowProvisioningUpdates
 
     artifacts:
-      paths:
-        - build/ios/ipa/*.ipa  # تأكد من أن هذا المسار يشير إلى ملفات IPA الصحيحة
+      - build/ios/ipa/*.ipa  # تأكد من أن المسار يشير إلى ملفات IPA الصحيحة
 
     publishing:
       email:
