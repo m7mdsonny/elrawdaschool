@@ -17,3 +17,25 @@ workflows:
       email:
         recipients:
           - m7mdsonny@gmail.com
+workflows:
+  ios-workflow:
+    name: iOS Test and Build Workflow
+    environment:
+      flutter: stable
+    scripts:
+      - name: Install dependencies
+        script: |
+          flutter pub get
+      - name: Build iOS App
+        script: |
+          flutter build ios --release --no-codesign
+      - name: Create IPA
+        script: |
+          xcodebuild -exportArchive \
+            -archivePath build/ios/iphoneos/Runner.xcarchive \
+            -exportOptionsPlist ios/Runner/Info.plist \
+            -exportPath build/ios/ipa
+    publishing:
+      email:
+        recipients:
+          - m7mdsonny@gmail.com  # أدخل بريدك الإلكتروني لتلقي الإشعارات
