@@ -51,3 +51,4 @@ workflows:
         certificate_password: $DISTRIBUTION_CERTIFICATE_PASSWORD  # كلمة المرور لشهادة التوزيع
       provisioning_profile:
         path: $PROVISIONING_PROFILE_PATH  # مسار ملف Provisioning Profile
+
