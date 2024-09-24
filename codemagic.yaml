@@ -3,19 +3,25 @@ workflows:
     name: "iOS Workflow"
 
     environment:
-      flutter: stable  # أو إصدار Flutter الذي تستخدمه
-      xcode: latest     # أو الإصدار المناسب
+      flutter: stable  # إصدار Flutter المناسب
+      xcode: latest    # إصدار Xcode المناسب
       ios_signing:
         distribution_type: app_store  # أو development إذا كنت تختبر
         bundle_identifier: com.elrawda.ios  # تأكد من تطابق Bundle ID مع تطبيقك
 
     scripts:
-      - name: Clean project
+      - name: Get Flutter dependencies
         script: |
-          flutter clean
+          flutter pub get
+
+      - name: Install CocoaPods dependencies
+        script: |
           cd ios
-          pod install  # تثبيت التبعيات
-          cd ..
+          pod install
+
+      - name: Update iOS Deployment Target
+        script: |
+          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 8.0/IPHONEOS_DEPLOYMENT_TARGET = 12.0/' ios/Runner.xcodeproj/project.pbxproj
 
       - name: Build iOS Archive
         script: |
