@@ -3,25 +3,37 @@ workflows:
     name: "iOS Workflow"
 
     environment:
-      flutter: stable  # إصدار Flutter المناسب
-      xcode: latest    # إصدار Xcode المناسب
-      ios_signing:
-        distribution_type: app_store  # أو development إذا كنت تختبر
-        bundle_identifier: com.elrawda.ios  # تأكد من تطابق Bundle ID مع تطبيقك
+      flutter: stable
+      xcode: latest
 
     scripts:
-      - name: Get Flutter dependencies
+      - name: Clean Flutter project
         script: |
-          flutter pub get
+          flutter clean
 
-      - name: Install CocoaPods dependencies
+      - name: Clean CocoaPods cache and install dependencies
         script: |
           cd ios
+          rm -rf Pods Podfile.lock
+          pod cache clean --all
           pod install
+          cd ..
 
-      - name: Update iOS Deployment Target
+      - name: Remove old build artifacts
         script: |
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 8.0/IPHONEOS_DEPLOYMENT_TARGET = 12.0/' ios/Runner.xcodeproj/project.pbxproj
+          rm -rf build/
+
+      - name: Clear Xcode derived data
+        script: |
+          xcodebuild clean -workspace ios/Runner.xcworkspace \
+                          -scheme Runner \
+                          -sdk iphoneos \
+                          -configuration Release
+
+      - name: Verify project structure
+        script: |
+          flutter pub get
+          flutter analyze
 
       - name: Build iOS Archive
         script: |
@@ -33,18 +45,5 @@ workflows:
                      -allowProvisioningUpdates \
                      archive
 
-      - name: Create IPA
-        script: |
-          xcodebuild -exportArchive \
-                     -archivePath build/ios/iphoneos/Runner.xcarchive \
-                     -exportOptionsPlist ios/Runner/Info.plist \
-                     -exportPath build/ios/ipa \
-                     -allowProvisioningUpdates
-
     artifacts:
-      - build/ios/ipa/*.ipa  # تأكد من صحة المسار لتخزين ملف IPA
-
-    publishing:
-      email:
-        recipients:
-          - m7mdsonny@gmail.com  # أدخل بريدك الإلكتروني لتلقي إشعارات النجاح أو الفشل
+      - build/ios/ipa/*.ipa
